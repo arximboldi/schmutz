@@ -58,6 +58,8 @@ if (SCHMUTZ_ENABLE_COVERAGE)
   target_link_libraries(schmutz INTERFACE "--coverage")
 endif()
 
+install(DIRECTORY scm DESTINATION include)
+
 #  Testing
 #  =======
 
