@@ -1,0 +1,10 @@
+;;
+;; schmutz - Scheme Unterstüzung
+;;
+;; Copyright (C) 2017 Juan Pedro Bolivar Puente
+;; Distributed under the Boost Software License, Version 1.0.
+;; See accompanying file LICENSE or at: http://boost.org/LICENSE_1_0.txt
+;;
+
+(define-module (example module))
+(load-extension "@GUILE_EXTENSION_DIR@/libmodule" "init_module")

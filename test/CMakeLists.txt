@@ -5,7 +5,7 @@
 set(CATCH_INCLUDE_DIR "${DEPS_DIR}/Source/catch/single_include")
 
 set(GGSPEC "${DEPS_DIR}/Source/ggspec/ggspec")
-set(GGSPEC_MODULE_DIR "${DEPS_DIR}/Source/ggspec")
+set(GGSPEC_MODULE_DIR "${DEPS_DIR}/Source")
 
 #  Dependencies
 #  ============
@@ -26,12 +26,13 @@ schmutz_external_dep_nobuild(deps-test ggspec
 
 add_custom_target(tests
   COMMENT "Build all the unit tests.")
+add_dependencies(tests examples)
 add_dependencies(check tests)
 
 # Build and run C++ unit tests
 file(GLOB_RECURSE schmutz_unit_tests "*.test.cpp")
 foreach(_file IN LISTS schmutz_unit_tests)
-  immer_target_name_for(_target _output "${_file}")
+  schmutz_target_name_for(_target _output "${_file}")
   add_executable(${_target} EXCLUDE_FROM_ALL "${_file}")
   set_target_properties(${_target} PROPERTIES OUTPUT_NAME ${_output})
   add_dependencies(tests ${_target})
@@ -48,7 +49,7 @@ endforeach()
 # Build Guile extensions and run all guile unit tests
 file(GLOB_RECURSE schmutz_unit_tests "*.scm.cpp")
 foreach(_file IN LISTS schmutz_unit_tests)
-  immer_target_name_for(_target _output "${_file}")
+  schmutz_target_name_for(_target _output "${_file}")
   add_executable(${_target} EXCLUDE_FROM_ALL "${_file}")
   add_dependencies(tests ${_target})
   set_target_properties(${_target} PROPERTIES OUTPUT_NAME ${_output})
@@ -56,4 +57,4 @@ foreach(_file IN LISTS schmutz_unit_tests)
 endforeach()
 add_test("test/ggspec" ${GGSPEC})
 set_tests_properties("test/ggspec" PROPERTIES
-  ENVIRONMENT "GUILE_LOAD_PATH=${GGSPEC_MODULE_DIR}")
+  ENVIRONMENT GUILE_LOAD_PATH=${GGSPEC_MODULE_DIR})
