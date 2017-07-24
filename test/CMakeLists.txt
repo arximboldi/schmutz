@@ -3,9 +3,8 @@
 #  ======
 
 set(CATCH_INCLUDE_DIR "${DEPS_DIR}/Source/catch/single_include")
-
-set(GGSPEC "${DEPS_DIR}/Source/ggspec/ggspec")
 set(GGSPEC_MODULE_DIR "${DEPS_DIR}/Source")
+set(GUILE "guile")
 
 #  Dependencies
 #  ============
@@ -30,8 +29,8 @@ add_dependencies(tests examples)
 add_dependencies(check tests)
 
 # Build and run C++ unit tests
-file(GLOB_RECURSE schmutz_unit_tests "*.test.cpp")
-foreach(_file IN LISTS schmutz_unit_tests)
+file(GLOB_RECURSE schmutz_cpp_unit_tests "*.test.cpp")
+foreach(_file IN LISTS schmutz_cpp_unit_tests)
   schmutz_target_name_for(_target _output "${_file}")
   add_executable(${_target} EXCLUDE_FROM_ALL "${_file}")
   set_target_properties(${_target} PROPERTIES OUTPUT_NAME ${_output})
@@ -46,15 +45,24 @@ foreach(_file IN LISTS schmutz_unit_tests)
   add_test("test/${_output}" ${_output})
 endforeach()
 
-# Build Guile extensions and run all guile unit tests
+# Build Guile extensions that are needed for the unit tests to run
 file(GLOB_RECURSE schmutz_unit_tests "*.scm.cpp")
 foreach(_file IN LISTS schmutz_unit_tests)
   schmutz_target_name_for(_target _output "${_file}")
-  add_executable(${_target} EXCLUDE_FROM_ALL "${_file}")
-  add_dependencies(tests ${_target})
+  # build the library.so file
+  add_library(${_target} SHARED EXCLUDE_FROM_ALL "${_file}")
+  add_dependencies(examples ${_target})
   set_target_properties(${_target} PROPERTIES OUTPUT_NAME ${_output})
   target_link_libraries(${_target} PUBLIC schmutz)
+  # build the library.scm file
+  set(GUILE_EXTENSION_DIR ${CMAKE_CURRENT_BINARY_DIR})
+  configure_file(${_output}.scm.in ${_output}.scm)
 endforeach()
-add_test("test/ggspec" ${GGSPEC})
-set_tests_properties("test/ggspec" PROPERTIES
-  ENVIRONMENT GUILE_LOAD_PATH=${GGSPEC_MODULE_DIR})
+
+file(GLOB_RECURSE schmutz_scm_unit_tests "*.scm")
+foreach(_file IN LISTS schmutz_scm_unit_tests)
+  schmutz_target_name_for(_target _output "${_file}")
+  add_test("test/${_output}" ${GUILE} ${_file})
+  set_tests_properties("test/${_output}" PROPERTIES
+    ENVIRONMENT GUILE_LOAD_PATH=${GGSPEC_MODULE_DIR}:${CMAKE_BUILD_DIR})
+endforeach()
