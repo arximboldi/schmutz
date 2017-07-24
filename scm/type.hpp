@@ -10,6 +10,8 @@
 
 #include <scm/detail/finalizer_wrapper.hpp>
 #include <scm/detail/define.hpp>
+
+#include <cassert>
 #include <string>
 
 namespace scm {
