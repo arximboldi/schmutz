@@ -53,7 +53,9 @@ if (SCHMUTZ_ENABLE_COVERAGE)
   target_link_libraries(schmutz INTERFACE "--coverage")
 endif()
 
-install(DIRECTORY scm DESTINATION include)
+install(TARGETS schmutz EXPORT SchmutzConfig)
+install(EXPORT SchmutzConfig DESTINATION lib/cmake/Schmutz)
+install(DIRECTORY scm DESTINATION   include)
 
 #  Testing
 #  =======
