@@ -2,9 +2,8 @@ language: nix
 
 script:
   - |
-    nix-shell -A schmutz_env --run "
-    mkdir build
-    cd build
-    cmake ..
-    make check
+    nix-shell --run "
+    mkdir build && cd build
+    cmake -G ninja ..
+    cmake --build --target check .
     "
