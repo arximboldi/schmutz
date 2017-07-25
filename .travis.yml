@@ -2,7 +2,7 @@ language: nix
 
 script:
   - |
-    nix-shell --run "
+    nix-shell -A schmutz_env --run "
     mkdir build
     cd build
     cmake ..
