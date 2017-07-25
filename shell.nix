@@ -1,21 +1,21 @@
 with import <nixpkgs> {};
 
+{ compiler ? "gcc5" }:
+
 let
   callable_traits = import ./nix/callable_traits.nix;
   docs = import ./nix/docs.nix;
+  compiler_pkg = pkgs.${compiler};
 in
 
 stdenv.mkDerivation rec {
   name = "schmutz-env";
-  env = buildEnv { name = name; paths = buildInputs; };
-  buildInputs = [
+  propagatedBuildInputs = [
+    compiler_pkg
     cmake
     pkgconfig
     guile
     callable_traits
-    cmake
-    gcc6
-    clang_38
     doxygen
     ninja
     docs.sphinx_arximboldi
