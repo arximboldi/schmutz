@@ -5,5 +5,5 @@ script:
     nix-shell --run "
     mkdir build && cd build
     cmake -G ninja ..
-    cmake --build --target check .
+    cmake --build . --target check
     "
