@@ -2,18 +2,24 @@ language: nix
 
 matrix:
   include:
-    - env: TYPE=Debug   COMPILER=clang_38
-    - env: TYPE=Release COMPILER=clang_38
-    - env: TYPE=Debug   COMPILER=gcc5
-    - env: TYPE=Release COMPILER=gcc5
+    - env: DO=check TYPE=Debug   COMPILER=clang_38
+    - env: DO=check TYPE=Release COMPILER=clang_38
+    - env: DO=check TYPE=Debug   COMPILER=gcc5
+    - env: DO=check TYPE=Release COMPILER=gcc5
+    - env: DO=build
+    - env: DO=docs
 
 before_install:
   - |
-    function should-deploy {
-        [[ "${TRAVIS_PULL_REQUEST}" == "false" && \
+    [[ -n "${COMPILER}" ]] || export COMPILER=gcc5
+    [[ -n "${TYPE}" ]]     || export TYPE=Debug
+    function build-p { [[ "${DO}" == build ]]; }
+    function check-p { [[ "${DO}" == check ]]; }
+    function docs-p {
+        [[ "${DO}" == docs && \
+           "${TRAVIS_PULL_REQUEST}" == "false" && \
            "${TRAVIS_BRANCH}" == "master" ]]
     }
-  - |
     function decrypt-ssh-key {
         openssl aes-256-cbc \
             -K  $encrypted_a6e9969759b7_key \
@@ -22,30 +28,31 @@ before_install:
             -out tools/travis/ssh-key -d
         chmod 600 tools/travis/ssh-key
     }
-  - |
     function with-nix {
         nix-shell --argstr compiler $COMPILER --run "set -e; $1"
     }
 
 install:
-  - with-nix "echo prepared environment!"
+  - with-nix "echo == nix environment ok"
 
-script:
-  - nix-build
+before_script:
   - |
     with-nix "
         mkdir build && cd build
-        cmake .. -DCMAKE_BUILD_TYPE=$TYPE
-        make check
+        cmake .. -DCMAKE_BUILD_TYPE=${TYPE}
     "
 
-after_success:
+script:
   - |
-    if should-deploy; then
-        decrypt-ssh-key
-        with-nix "
-            cd build
-            make docs
-            make upload-docs
-        "
-    fi
+    ! build-p || nix-build
+  - |
+    ! check-p || with-nix "
+        cd build
+        make check
+    "
+  - |
+    ! docs-p || (decrypt-ssh-key && with-nix "
+        cd build
+        make docs
+        make upload-docs
+    ")
