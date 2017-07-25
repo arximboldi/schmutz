@@ -5,31 +5,35 @@ addons:
 
 before_install:
   - |
+    function should-deploy {
+        [[ "${TRAVIS_PULL_REQUEST}" == "false" && \
+           "${TRAVIS_BRANCH}" == "master" ]]
+    }
+
     function decrypt-ssh-key {
         openssl aes-256-cbc \
             -K  $encrypted_a6e9969759b7_key \
             -iv $encrypted_a6e9969759b7_iv \
-            -in ssh-key.enc \
+            -in tools/travis/ssh-key.enc \
             -out tools/travis/ssh-key -d
     }
 
 script:
   - |
     nix-shell --run "set -e
-    mkdir build && cd build
-    cmake -G ninja ..
-    cmake --build . --target check
+        mkdir build && cd build
+        cmake -G Ninja ..
+        cmake --build . --target check
     "
 
 after_success:
-  -|
-  if [[ "${TRAVIS_PULL_REQUEST}" == "false" && \
-        "${TRAVIS_BRANCH}" == "master" ]]
-  then
-      decrypt-ssh-key
-      nix-shell --run "set -e
-      cd build
-      cmake --build . --target docs
-      cmake --build . --target upload-docs
-      "
-  fi
+  - |
+    if should-deploy;
+    then
+        decrypt-ssh-key
+        nix-shell --run "set -e
+            cd build
+            cmake --build . --target docs
+            cmake --build . --target upload-docs
+        "
+    fi
