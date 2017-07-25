@@ -14,9 +14,9 @@ let
     nativeBuildInputs = [ cmake ];
     enableParallelBuilding = true;
     meta = with stdenv.lib; {
-      homepage    = "https://github.com/badair/callable_traits";
+      homepage = "https://github.com/badair/callable_traits";
       description = "C++11 header-only library for the inspection, synthesis, and decomposition of callable types";
-      license     = licenses.boost;
+      license = licenses.boost;
     };
   };
 in
