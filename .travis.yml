@@ -1,5 +1,8 @@
 language: nix
 
+addons:
+  ssh_known_hosts: sinusoid.es
+
 before_install:
   - |
     function decrypt-ssh-key {
