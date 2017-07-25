@@ -1,21 +1,19 @@
 language: nix
 
-addons:
-  ssh_known_hosts: sinusoid.es
-
 before_install:
   - |
     function should-deploy {
         [[ "${TRAVIS_PULL_REQUEST}" == "false" && \
            "${TRAVIS_BRANCH}" == "master" ]]
     }
-
+  - |
     function decrypt-ssh-key {
         openssl aes-256-cbc \
             -K  $encrypted_a6e9969759b7_key \
             -iv $encrypted_a6e9969759b7_iv \
             -in tools/travis/ssh-key.enc \
             -out tools/travis/ssh-key -d
+        chmod 600 tools/travis/ssh-key
     }
 
 script:
@@ -23,18 +21,17 @@ script:
   - |
     nix-shell --run "set -e
         mkdir build && cd build
-        cmake -G Ninja ..
-        cmake --build . --target check
+        cmake ..
+        make check
     "
 
 after_success:
   - |
-    if should-deploy;
-    then
+    if should-deploy; then
         decrypt-ssh-key
         nix-shell --run "set -e
             cd build
-            cmake --build . --target docs
-            cmake --build . --target upload-docs
+            make docs
+            make upload-docs
         "
     fi

@@ -11,7 +11,9 @@ add_custom_target(docs
 add_dependencies(docs doxygen)
 
 set(schmutz_ssh_method
-  ssh -p 5488 -i ${CMAKE_SOURCE_DIR}/tools/travis/ssh-key)
+  ssh -p 5488
+  -o StrictHostKeyChecking=no
+  -i ${CMAKE_SOURCE_DIR}/tools/travis/ssh-key)
 
 add_custom_target(upload-docs
   COMMAND
