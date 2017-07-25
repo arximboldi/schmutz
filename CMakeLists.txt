@@ -14,8 +14,6 @@ set(CMAKE_CXX_EXTENSIONS off)
 #  Options
 #  =======
 
-set(DEPS_DIR "${CMAKE_BINARY_DIR}/deps")
-
 option(SCHMUTZ_ENABLE_COVERAGE "compile with test coverage support")
 
 include(SchmutzUtils)
@@ -25,19 +23,7 @@ include(SchmutzUtils)
 
 include(ExternalProject)
 
-set_directory_properties(PROPERTIES EP_BASE "${DEPS_DIR}")
-
-add_custom_target(deps COMMENT "Download and prepare dependencies")
-add_custom_target(deps-core COMMENT "Get core dependencies")
-add_dependencies(deps deps-core)
-
-set(CALLABLE_TRAITS_INCLUDE_DIR
-  "${DEPS_DIR}/Source/callable_traits/include")
-
-schmutz_external_dep_nobuild(deps-core callable_traits
-  GIT_REPOSITORY https://github.com/badair/callable_traits.git)
-
-find_package(Threads)
+find_package(CallableTraits)
 find_package(PkgConfig)
 pkg_check_modules(Guile guile-2.2)
 
@@ -55,12 +41,12 @@ endif()
 
 add_library(schmutz INTERFACE)
 target_include_directories(schmutz INTERFACE
-  $<BUILD_INTERFACE:${schmutz_BINARY_DIR}/>
   $<BUILD_INTERFACE:${schmutz_SOURCE_DIR}/>
   $<INSTALL_INTERFACE:include>
-  ${Guile_INCLUDE_DIRS}
-  ${CALLABLE_TRAITS_INCLUDE_DIR})
-target_link_libraries(schmutz INTERFACE ${Guile_LIBRARIES})
+  ${Guile_INCLUDE_DIRS})
+target_link_libraries(schmutz INTERFACE
+  ${Guile_LIBRARIES}
+  callable_traits)
 
 if (SCHMUTZ_ENABLE_COVERAGE)
   target_compile_options(schmutz INTERFACE "--coverage")

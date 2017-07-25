@@ -2,30 +2,13 @@
 #  Config
 #  ======
 
-set(CATCH_INCLUDE_DIR "${DEPS_DIR}/Source/catch/single_include")
-set(GGSPEC_MODULE_DIR "${DEPS_DIR}/Source")
 set(GUILE "guile")
-
-#  Dependencies
-#  ============
-
-add_custom_target(deps-test COMMENT "Get test dependencies")
-add_dependencies(deps deps-test)
-
-schmutz_external_dep_nobuild(deps-test catch
-  # GIT_REPOSITORY git@github.com:philsquared/Catch.git
-  # This fork has --break for GDB
-  GIT_REPOSITORY https://github.com/lorenzhs/Catch.git)
-
-schmutz_external_dep_nobuild(deps-test ggspec
-  GIT_REPOSITORY https://github.com/yawaramin/ggspec.git)
 
 #  Targets
 #  =======
 
 add_custom_target(tests
   COMMENT "Build all the unit tests.")
-add_dependencies(tests examples)
 add_dependencies(check tests)
 
 # Build and run C++ unit tests
