@@ -19,6 +19,7 @@ before_install:
     }
 
 script:
+  - nix-build
   - |
     nix-shell --run "set -e
         mkdir build && cd build
