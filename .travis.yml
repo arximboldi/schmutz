@@ -6,6 +6,5 @@ script:
     mkdir build
     cd build
     cmake ..
-    make deps
     make check
     "
