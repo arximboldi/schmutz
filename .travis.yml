@@ -1,34 +1,11 @@
-language: c++
-sudo: false
+language: nix
 
-addons:
-  apt:
-    packages: g++-6
-    sources: ubuntu-toolchain-r-test
-
-matrix:
-  include:
-    - env: >
-        COMPILER=clang++ LLVM=3.9.0 CONFIGURATION=Debug SANITIZE=true
-
-    - env: >
-        COMPILER=clang++ LLVM=3.9.0 CONFIGURATION=Release
-
-    - env: >
-        COMPILER=g++-6 CONFIGURATION=Debug COVERAGE=true
-
-    - env: >
-        COMPILER=g++-6 CONFIGURATION=Release DOCS=true
-
-cache:
-  - pip
-  - ccache
-  - directories:
-      - ${TRAVIS_BUILD_DIR}/build/deps
-      - ${TRAVIS_BUILD_DIR}/deps
-
-before_install: source tools/travis/all.bash && travis-before-install
-install:        travis-install
-before_script:  travis-before-script
-script:         travis-script
-after_success:  travis-after-success
+script:
+  - |
+    nix-shell --run "
+    mkdir build
+    cd build
+    cmake ..
+    make deps
+    make check
+    "
