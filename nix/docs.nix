@@ -1,10 +1,5 @@
 with import <nixpkgs> {};
 
-let
-  sphinx_commit = "b03fb3889adbd865070b27dabd84479888af7099";
-  breathe_commit = "5074aecb5ad37bb70f50216eaa01d03a375801ec";
-in
-
 rec {
   sphinxcontrib_websupport = with python27Packages; buildPythonPackage rec {
     name = "sphinxcontrib-websupport-${version}";
@@ -23,11 +18,12 @@ rec {
   sphinx_arximboldi = with python27Packages; buildPythonPackage rec {
     name = "${pname}-${version}";
     pname = "Sphinx";
-    version = "git-arximbolid-${sphinx_commit}";
+    version = "git-arximbolid-${commit}";
+    commit = "b03fb3889adbd865070b27dabd84479888af7099";
     src = fetchFromGitHub {
       owner = "arximboldi";
       repo = "sphinx";
-      rev = sphinx_commit;
+      rev = commit;
       sha256 = "1lgch4xxbfv4k6ibgkd4jfdpvzqk1pjjj4wwgs6cmr5089g4d3za";
     };
     LC_ALL = "en_US.UTF-8";
@@ -68,13 +64,14 @@ rec {
   };
 
   breathe_arximboldi = with python27Packages; buildPythonPackage rec {
-    version = "git-arximboldi-${breathe_commit}";
+    version = "git-arximboldi-${commit}";
     pname = "breathe";
     name = "${pname}-${version}";
+    commit = "5074aecb5ad37bb70f50216eaa01d03a375801ec";
     src = fetchFromGitHub {
       owner = "arximboldi";
       repo = "breathe";
-      rev = breathe_commit;
+      rev = commit;
       sha256 = "10kkh3wb0ggyxx1a7x50aklhhw0cq269g3jddf2gb3pv9gpbj7sa";
     };
     propagatedBuildInputs = [ docutils sphinx_arximboldi ];

@@ -17,14 +17,12 @@ endif()
 #  Options
 #  =======
 
-option(SCHMUTZ_ENABLE_COVERAGE "compile with test coverage support")
+option(ENABLE_COVERAGE "compile with test coverage support")
 
 include(SchmutzUtils)
 
 #  Dependencies
 #  ============
-
-include(ExternalProject)
 
 find_package(CallableTraits)
 find_package(PkgConfig)
@@ -44,21 +42,21 @@ endif()
 
 add_library(schmutz INTERFACE)
 target_include_directories(schmutz INTERFACE
+  $<BUILD_INTERFACE:${immer_BINARY_DIR}/>
   $<BUILD_INTERFACE:${schmutz_SOURCE_DIR}/>
   $<INSTALL_INTERFACE:include>
   ${Guile_INCLUDE_DIRS})
 target_link_libraries(schmutz INTERFACE
   ${Guile_LIBRARIES}
   callable_traits)
-
-if (SCHMUTZ_ENABLE_COVERAGE)
-  target_compile_options(schmutz INTERFACE "--coverage")
-  target_link_libraries(schmutz INTERFACE "--coverage")
-endif()
-
 install(TARGETS schmutz EXPORT SchmutzConfig)
 install(EXPORT SchmutzConfig DESTINATION lib/cmake/Schmutz)
 install(DIRECTORY scm DESTINATION   include)
+
+if (ENABLE_COVERAGE)
+  target_compile_options(schmutz INTERFACE "--coverage")
+  target_link_libraries(schmutz INTERFACE "--coverage")
+endif()
 
 #  Testing
 #  =======
