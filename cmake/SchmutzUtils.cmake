@@ -1,16 +1,4 @@
 
-function(schmutz_external_dep target name)
-  ExternalProject_Add(${name} EXCLUDE_FROM_ALL 1 "${ARGN}")
-  add_dependencies(${target} ${name})
-endfunction()
-
-function(schmutz_external_dep_nobuild target name)
-  schmutz_external_dep(${target} ${name} "${ARGN}"
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
-    INSTALL_COMMAND "")
-endfunction()
-
 function(schmutz_target_name_for out_target out_file file)
   get_filename_component(_extension ${_file} EXT)
 
