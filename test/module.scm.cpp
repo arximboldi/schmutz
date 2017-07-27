@@ -16,7 +16,7 @@ int free_fn() { return 42; }
 
 struct foo
 {
-    std::size_t count_;
+    std::size_t count_ = 0;
     auto count() const { return count_; }
     void update() { ++count_; }
     foo updated() { return { count_ + 1 }; }
