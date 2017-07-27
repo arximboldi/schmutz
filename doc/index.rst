@@ -10,7 +10,7 @@ Contents
    :maxdepth: 3
 
    introduction
-
+   reference
 
 ----
 

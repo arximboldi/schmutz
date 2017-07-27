@@ -13,6 +13,14 @@
 
 namespace scm {
 
+/**
+ * C++ representation of a Scheme list.
+ *
+ * Like Scheme values, this type has *reference semantics*.  Copying a
+ * `scm::list` just copies a pointer or handle to the underlying Scheme
+ * list, thus just creating a new *alias*.  Mutations to the
+ * referenced Scheme list are visible through all the aliases.
+ */
 struct list : detail::wrapper
 {
     using base_t = detail::wrapper;
@@ -43,6 +51,10 @@ struct list : detail::wrapper
     }
 };
 
+/**
+ * C++ representation of a Scheme list that when used at the end of a
+ * function, will capture the *rest* arguments.
+ */
 struct args : list
 {
     using list::list;

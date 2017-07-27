@@ -36,11 +36,23 @@ protected:
 
 } // namespace detail
 
+/**
+ * C++ representation of a  Scheme value.
+ *
+ * Like Scheme values, this type has *reference semantics*.  Copying a
+ * `scm::val` just copies a pointer or handle to the underlying Scheme
+ * object, thus just creating a new *alias*.  Mutations to the
+ * referenced Scheme object are visible through all the aliases.
+ */
 struct val : detail::wrapper
 {
     using base_t = detail::wrapper;
     using base_t::base_t;
 
+    /**
+     * Implicit conversion from a C++ type to a Scheme value.  The C++
+     * object is always copied.
+     */
     template <typename T,
               typename = std::enable_if_t<
                   (!std::is_same<std::decay_t<T>, val>{} &&
@@ -49,6 +61,11 @@ struct val : detail::wrapper
         : base_t(detail::to_scm(std::forward<T>(x)))
     {}
 
+    /**
+     * Implicit conversion from a Scheme value to a C++ type.  If the
+     * type is a custom type, the conversion may just return a
+     * reference to the underlying C++ object.
+     */
     template <typename T,
               typename = std::enable_if_t<
                   std::is_same<T, decltype(detail::to_cpp<T>(SCM{}))>{}>>
@@ -64,6 +81,11 @@ struct val : detail::wrapper
                   std::is_same<const T&, decltype(detail::to_cpp<T>(SCM{}))>{}>>
     operator const T& () const { return detail::to_cpp<T>(handle_); }
 
+    /**
+     * Function call operator.  If value holds a Scheme procedure,
+     * calls the Scheme procedure with the given arguments.  They
+     * arguments may be implicitly converted from C++.
+     */
     val operator() () const
     { return val{scm_call_0(get())}; }
     val operator() (val a0) const

@@ -30,17 +30,14 @@ struct definer
     definer(definer<Tag, Seq2>)
     {}
 
+    /**
+     * Defines a Scheme procedure `(name ...)` that returns the result
+     * of invoking `fn(...)`.
+     */
     template <typename Fn>
     next_t define(std::string name, Fn fn) &&
     {
         define_impl<this_t>(name, fn);
-        return { std::move(*this) };
-    }
-
-    template <typename Fn>
-    next_t maker(Fn fn) &&
-    {
-        define_impl<this_t>("make", fn);
         return { std::move(*this) };
     }
 };
@@ -63,6 +60,10 @@ struct group_definer
     group_definer(group_definer<Tag, Seq2>)
     {}
 
+    /**
+     * Defines a Scheme procedure `([group-name]-name ...)` that returns
+     * the result of invoking `fn(...)`.
+     */
     template <typename Fn>
     next_t define(std::string name, Fn fn) &&
     {
@@ -73,16 +74,24 @@ struct group_definer
 
 } // namespace detail
 
+/**
+ * Returns a `scm::detail::definer` that can be used to add definitions
+ * to the current module.
+ */
 template <typename Tag=void>
 detail::definer<Tag> group()
 {
     return {};
 }
 
+/**
+ * Returns a named `scm::detail::group_definer` that can be used to add
+ * definitions to the current module.
+ */
 template <typename Tag=void>
-detail::group_definer<Tag> group(std::string name)
+detail::group_definer<Tag> group(std::string group_name)
 {
-    return { std::move(name) };
+    return { std::move(group_name) };
 }
 
 } // namespace scm

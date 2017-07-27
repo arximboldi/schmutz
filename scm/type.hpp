@@ -96,12 +96,20 @@ struct type_definer : move_sequence
         , finalizer_{std::move(r.finalizer_)}
     {}
 
+    /**
+     * Define a Scheme procedure `([type-name])` that returns a Scheme
+     * value holding a default constructed `T` instance.
+     */
     next_t constructor() &&
     {
         define_impl<this_t>(type_name_, [] { return T{}; });
         return { std::move(*this) };
     }
 
+    /**
+     * Define a Scheme procedure `([type-name] ...)` that returns a
+     * Scheme value holding the result of invoking `fn(args...)`.
+     */
     template <typename Fn>
     next_t constructor(Fn fn) &&
     {
@@ -109,26 +117,20 @@ struct type_definer : move_sequence
         return { std::move(*this) };
     }
 
-    next_t finalizer() &&
-    {
-        finalizer_ = (scm_t_struct_finalize) +finalizer_wrapper<Tag>(
-            [] (T& x) { x.~T(); });
-        return { std::move(*this) };
-    }
-
-    template <typename Fn>
-    next_t finalizer(Fn fn) &&
-    {
-        finalizer_ = (scm_t_struct_finalize) +finalizer_wrapper<Tag>(fn);
-        return { std::move(*this) };
-    }
-
+    /**
+     * Define a Scheme procedure `(make-[type-name])` that returns a
+     * Scheme value holding a default constructed `T` instance.
+     */
     next_t maker() &&
     {
         define_impl<this_t>("make-" + type_name_, [] { return T{}; });
         return { std::move(*this) };
     }
 
+    /**
+     * Define a Scheme procedure `(make-[type-name] ...)` that returns
+     * the result of invoking `fn(...)`.
+     */
     template <typename Fn>
     next_t maker(Fn fn) &&
     {
@@ -136,6 +138,31 @@ struct type_definer : move_sequence
         return { std::move(*this) };
     }
 
+    /**
+     * Set the finalizer for Scheme wrapped values of `T` to invoke
+     * the destructor of `T` on the wrapped value.
+     */
+    next_t finalizer() &&
+    {
+        finalizer_ = (scm_t_struct_finalize) +finalizer_wrapper<Tag>(
+            [] (T& x) { x.~T(); });
+        return { std::move(*this) };
+    }
+
+    /**
+     * Set the finalizer of `T` to invoke `fn(*this)`.
+     */
+    template <typename Fn>
+    next_t finalizer(Fn fn) &&
+    {
+        finalizer_ = (scm_t_struct_finalize) +finalizer_wrapper<Tag>(fn);
+        return { std::move(*this) };
+    }
+
+    /**
+     * Define a Scheme procedure `([type-name]-[name] ...)` that returns
+     * the result of invoking `fn(...)`.
+     */
     template <typename Fn>
     next_t define(std::string name, Fn fn) &&
     {
@@ -146,7 +173,12 @@ struct type_definer : move_sequence
 
 } // namespace detail
 
-template <typename Tag, typename T=Tag>
+/**
+ * Returns a new `scm::detail::type_definer` that registers a type
+ * `T` with the given `type_name` and can be used to add related
+ * definitions to the current module.
+ */
+template <typename T, typename Tag=T>
 detail::type_definer<Tag, T> type(std::string type_name)
 {
     return { type_name };

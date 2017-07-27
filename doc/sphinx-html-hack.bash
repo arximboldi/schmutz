@@ -34,7 +34,6 @@ fix-do-not-repeat-type-in-member-using-declaration()
     dst='<em class="property">using </em><code class="descname">\3 = \4</code>'
     sed -i "s@$src@$dst@g" $location/_build/html/*.html
 }
-fix-do-not-repeat-type-in-member-using-declaration
 
 fix-remove-double-class-name()
 {
@@ -58,7 +57,6 @@ fix-remove-straneous-typedefs-2()
     dst='= '
     sed -i "s@$src@$dst@g" $location/_build/html/*.html
 }
-fix-remove-straneous-typedefs-2
 
 fix-remove-straneous-using-declarations()
 {
@@ -74,7 +72,6 @@ fix-remove-straneous-template-in-using-declarations-1()
     pre=':a;N;$!ba;'
     sed -i "$pre;s@$src@$dst@g" $location/_build/html/*.html
 }
-fix-remove-straneous-template-in-using-declarations-1
 
 fix-remove-straneous-template-in-using-declarations-2()
 {
@@ -82,7 +79,6 @@ fix-remove-straneous-template-in-using-declarations-2()
     dst='></span><span '
     sed -i "s@$src@$dst@g" $location/_build/html/*.html
 }
-fix-remove-straneous-template-in-using-declarations-2
 
 fix-remove-countainer-css-class-in-member-definitions-causing-overflow()
 {
@@ -90,12 +86,17 @@ fix-remove-countainer-css-class-in-member-definitions-causing-overflow()
     dst='breathe-sectiondef'
     sed -i "s@$src@$dst@g" $location/_build/html/*.html
 }
-fix-remove-countainer-css-class-in-member-definitions-causing-overflow
 
-fix-remove-inherits-from()
+fix-remove-inherits-from-undefined()
 {
     src='<p>Inherits from [^/]*</p>'
     dst=''
     sed -i "s@$src@$dst@g" $location/_build/html/*.html
 }
-fix-remove-inherits-from
+
+fix-do-not-repeat-type-in-member-using-declaration
+fix-remove-straneous-typedefs-2
+fix-remove-straneous-template-in-using-declarations-1
+fix-remove-straneous-template-in-using-declarations-2
+fix-remove-countainer-css-class-in-member-definitions-causing-overflow
+fix-remove-inherits-from-undefined
