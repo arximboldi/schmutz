@@ -12,24 +12,12 @@
   #:use-module (gnu packages pkg-config)
   #:use-module (gnu packages version-control))
 
-(define (read-command cmd)
-  (let* ((port (open-input-pipe cmd))
-         (str  (read-line port)))
-    (close-pipe port)
-    (if (eof-object? str) "" str)))
-
-(define %git-commit  (read-command "git rev-parse HEAD"))
-(define %git-status  (read-command "git status --porcelain"))
-(define %git-version (string-append "git-"
-                                    %git-commit
-                                    (if (string-null? %git-status)
-                                        "" "-dirty")))
-(define %source-dir  (dirname (current-filename)))
+(define %source-dir (dirname (current-filename)))
 
 (define-public schmutz
   (package
     (name "schmutz")
-    (version %git-version)
+    (version "git")
     (synopsis "Bind C++ code to Scheme")
     (description "Bind C++ code to Scheme")
     (home-page "https://github.com/arximboldi/schmutz")
