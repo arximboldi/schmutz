@@ -22,8 +22,8 @@ before_install:
            "${TRAVIS_BRANCH}" == "master" ]]
     }
     function upload-p {
-        [[ -n "$encrypted_1c8d51d72e41_key" && \
-           -n "$encrypted_1c8d51d72e41_iv" ]]
+        [[ -n "$encrypted_a6e9969759b7_key" && \
+           -n "$encrypted_a6e9969759b7_iv" ]]
     }
     function decrypt-ssh-key {
         openssl aes-256-cbc \
