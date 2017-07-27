@@ -2,7 +2,7 @@ language: nix
 
 matrix:
   include:
-    - env: DO=check TYPE=Debug COMPILER=clang_38 SANITIZE=true
+    - env: DO=check TYPE=Debug COMPILER=clang_38
     - env: DO=check TYPE=Release COMPILER=clang_38
     - env: DO=check TYPE=Debug COMPILER=gcc5 COVERAGE=true
     - env: DO=check TYPE=Release COMPILER=gcc5
