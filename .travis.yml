@@ -2,9 +2,9 @@ language: nix
 
 matrix:
   include:
-    - env: DO=check TYPE=Debug   COMPILER=clang_38
+    - env: DO=check TYPE=Debug COMPILER=clang_38 SANITIZE=true
     - env: DO=check TYPE=Release COMPILER=clang_38
-    - env: DO=check TYPE=Debug   COMPILER=gcc5
+    - env: DO=check TYPE=Debug COMPILER=gcc5 COVERAGE=true
     - env: DO=check TYPE=Release COMPILER=gcc5
     - env: DO=build
     - env: DO=docs
@@ -15,10 +15,15 @@ before_install:
     [[ -n "${TYPE}" ]]     || export TYPE=Debug
     function build-p { [[ "${DO}" == build ]]; }
     function check-p { [[ "${DO}" == check ]]; }
-    function docs-p {
-        [[ "${DO}" == docs && \
-           "${TRAVIS_PULL_REQUEST}" == "false" && \
+    function docs-p  { [[ "${DO}" == docs ]]; }
+    function coverage-p { [[ "${COVERAGE}" == true ]]; }
+    function deploy-p {
+        [[ "${TRAVIS_PULL_REQUEST}" == "false" && \
            "${TRAVIS_BRANCH}" == "master" ]]
+    }
+    function upload-p {
+        [[ -n "$encrypted_1c8d51d72e41_key" && \
+           -n "$encrypted_1c8d51d72e41_iv" ]]
     }
     function decrypt-ssh-key {
         openssl aes-256-cbc \
@@ -39,20 +44,27 @@ before_script:
   - |
     with-nix "
         mkdir build && cd build
-        cmake .. -DCMAKE_BUILD_TYPE=${TYPE}
+        cmake .. \
+            -DCMAKE_BUILD_TYPE=${TYPE} \
+            -DENABLE_SANITIZE=${SANITIZE} \
+            -DENABLE_COVERAGE=${COVERAGE}
     "
 
 script:
   - |
+    set -e
     ! build-p || nix-build
+    ! check-p || with-nix "cd build && make -j2 check"
+    ! docs-p  || with-nix "cd build && make docs"
+
+after_success:
   - |
-    ! check-p || with-nix "
+    ! coverage-p || with-nix "
         cd build
-        make check
+        find . -name \"*.gcno\" | xargs gcov -bcprs ${PWD}
+        bash <(curl -s https://codecov.io/bash) -x gcov
     "
-  - |
-    ! docs-p || (decrypt-ssh-key && with-nix "
-        cd build
-        make docs
-        make upload-docs
-    ")
+    if upload-p; then
+        decrypt-ssh-key
+        ! docs-p || ! deploy-p || with-nix "cd build && make upload-docs"
+    fi
