@@ -3,6 +3,10 @@
    :target: https://travis-ci.org/arximboldi/schmutz
    :alt: Travis Badge
 
+.. image:: https://codecov.io/gh/arximboldi/schmutz/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/arximboldi/schmutz
+   :alt: CodeCov Badge
+
 .. raw:: html
 
    <img width="100%" src="https://cdn.rawgit.com/arximboldi/schmutz/375ad78e/doc/_static/logo-front.svg" alt="Logotype"/>
