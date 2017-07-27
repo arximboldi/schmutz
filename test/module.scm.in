@@ -6,5 +6,5 @@
 ;; See accompanying file LICENSE or at: http://boost.org/LICENSE_1_0.txt
 ;;
 
-(define-module (example module))
-(load-extension "@GUILE_EXTENSION_DIR@/example/libmodule" "init_module")
+(define-module (test module))
+(load-extension "@GUILE_EXTENSION_DIR@/test/libmodule" "init_module")

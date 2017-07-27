@@ -18,6 +18,7 @@ endif()
 #  =======
 
 option(ENABLE_COVERAGE "compile with test coverage support")
+set(GUILE_EXTENSION_DIR ${CMAKE_BINARY_DIR})
 
 include(SchmutzUtils)
 

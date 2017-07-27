@@ -57,7 +57,8 @@ struct group_definer
 
     template <int Seq2,
               typename Enable=std::enable_if_t<Seq2 + 1 == Seq>>
-    group_definer(group_definer<Tag, Seq2>)
+    group_definer(group_definer<Tag, Seq2> other)
+        : group_name_ {std::move(other.group_name_)}
     {}
 
     /**
