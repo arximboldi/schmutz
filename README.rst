@@ -144,8 +144,10 @@ From then on, one may build and run all tests by doing::
 License
 -------
 
-**This software is licensed under the Boost Software License, Version
- 1.0.**
+This software is licensed under the
+**Boost Software License, Version 1.0.**
+
+----
 
 .. code-block:: plain
 
