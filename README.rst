@@ -118,7 +118,7 @@ Development
 
 In order to develop the library, you will need to compile and run the
 examples, tests and benchmarks.  These require some additional tools.
-The easiest way to install them is by using the `Guix package manager`
+The easiest way to install them is by using the `Guix package manager`_
 or the `Nix package manager`_.  At the root of the repository just
 type::
 
