@@ -1,16 +1,18 @@
+.. raw:: html
 
-.. image:: https://travis-ci.org/arximboldi/schmutz.svg?branch=master
-   :target: https://travis-ci.org/arximboldi/schmutz
-   :alt: Travis Badge
+   <a href="https://travis-ci.org/arximboldi/schmutz">
+     <img align="left" alt="Travis CI badge" src="https://travis-ci.org/arximboldi/schmutz.svg?branch=master" style="margin-right:4px;">
+   </a>
 
-.. image:: https://codecov.io/gh/arximboldi/schmutz/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/arximboldi/schmutz
-   :alt: CodeCov Badge
+   <a href="https://codecov.io/gh/arximboldi/schmutz">
+     <img align="left" alt="Code Coverage badge" src="https://codecov.io/gh/arximboldi/schmutz/branch/master/graph/badge.svg">
+   </a>
 
-.. image:: https://cdn.rawgit.com/arximboldi/immer/355a113782aedc2ea22463444014809269c2376d/doc/_static/sinusoidal-badge.svg
-   :target: https://sinusoid.al
-   :align: right
-   :alt: Sinusoidal Engineering Badge
+   <a href="https://sinusoid.al">
+     <img align="right" alt="Sinusoidal Engineering badge" src="https://cdn.rawgit.com/arximboldi/immer/355a113782aedc2ea22463444014809269c2376d/doc/_static/sinusoidal-badge.svg">
+   </a>
+
+   <img width="100%" src="https://cdn.rawgit.com/arximboldi/immer/3888170d247359cc0905eed548cd46897caef0f4/doc/_static/logo-front.svg" alt="Logotype"/>
 
 .. raw:: html
 
