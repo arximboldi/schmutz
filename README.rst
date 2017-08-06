@@ -7,6 +7,11 @@
    :target: https://codecov.io/gh/arximboldi/schmutz
    :alt: CodeCov Badge
 
+.. image:: https://cdn.rawgit.com/arximboldi/immer/355a113782aedc2ea22463444014809269c2376d/doc/_static/sinusoidal-badge.svg
+   :target: https://sinusoid.al
+   :align: right
+   :alt: Sinusoidal Engineering Badge
+
 .. raw:: html
 
    <img width="100%" src="https://cdn.rawgit.com/arximboldi/schmutz/375ad78e/doc/_static/logo-front.svg" alt="Logotype"/>
