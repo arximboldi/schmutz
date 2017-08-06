@@ -33,9 +33,16 @@ future.
 .. _contents: https://sinusoid.es/schmutz/#contents
 .. _github: https://github.com/arximboldi/schmutz
 
-  This is a *pro bono* research project by `Sinusoidal Engineering
-  <http://sinusoid.al/>`_.  **To ensure its long term development
-  please consider becoming a sponsor or hiring us:** juanpe@sinusoid.al
+  .. raw:: html
+
+     <a href="https://www.patreon.com/sinusoidal">
+         <img align="right" src="https://cdn.rawgit.com/arximboldi/immer/master/doc/_static/patreon.svg">
+     </a>
+
+  This research project is part of a long-term vision helping
+  interactive and concurrent C++ programs become easier to write.
+  **Support our vision by becoming a patron or buying a sponsorship
+  package:** juanpe@sinusoid.al
 
 .. include:index/end
 
