@@ -34,6 +34,49 @@ protected:
     SCM handle_ = SCM_UNSPECIFIED;
 };
 
+struct big
+{};
+struct small
+{};
+template <typename... T>
+using scm_call_size = std::conditional_t<(sizeof...(T) <= 9), small, big>;
+
+template <int nargs>
+constexpr auto dispatch_small_scm_call()
+{
+    if (nargs == 0)
+        return scm_call_0;
+    else if (nargs == 1)
+        return scm_call_1;
+    else if (nargs == 2)
+        return scm_call_2;
+    else if (nargs == 3)
+        return scm_call_3;
+    else if (nargs == 4)
+        return scm_call_4;
+    else if (nargs == 5)
+        return scm_call_5;
+    else if (nargs == 6)
+        return scm_call_6;
+    else if (nargs == 7)
+        return scm_call_7;
+    else if (nargs == 8)
+        return scm_call_8;
+    else if (nargs == 9)
+        return scm_call_9;
+}
+
+template <typename... T>
+SCM scm_funcall_impl(small, SCM f, T... arg)
+{
+  return dispatch_small_scm_call(f,arg...);
+}
+
+template <typename... T>
+SCM scm_funcall_impl(big, SCM f, T... arg)
+{
+    return scm_call(f, arg..., SCM_UNDEFINED);
+}
 } // namespace detail
 
 /**
@@ -89,35 +132,7 @@ struct val : detail::wrapper
     template <typename... T>
     val operator()(T... arg) const
     {
-        constexpr auto nargs = sizeof...(arg);
-        constexpr auto scm_call_fn = [nargs]() {
-            if (nargs == 0) {
-                return scm_call_0;
-            } else if (nargs == 1) {
-                return scm_call_1;
-            } else if (nargs == 2) {
-                return scm_call_2;
-            } else if (nargs == 3) {
-                return scm_call_3;
-            } else if (nargs == 4) {
-                return scm_call_4;
-            } else if (nargs == 5) {
-                return scm_call_5;
-            } else if (nargs == 6) {
-                return scm_call_6;
-            } else if (nargs == 7) {
-                return scm_call_7;
-            } else if (nargs == 8) {
-                return scm_call_8;
-            } else if (nargs == 9) {
-                return scm_call_9;
-            } else {
-                return [](SCM f, auto... arg) {
-                    return scm_call(f, arg..., SCM_UNDEFINED);
-                };
-            }
-        }();
-        return scm_call_fn(get(), val{arg}...);
+      return detail::scm_funcall_impl(get(),arg...);
     }
 };
 
