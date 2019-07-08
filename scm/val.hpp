@@ -69,7 +69,7 @@ constexpr auto dispatch_small_scm_call()
 template <typename... T>
 SCM scm_funcall_dispatch(small, SCM f, T... arg)
 {
-  return dispatch_small_scm_call()(f,arg...);
+  return dispatch_small_scm_call<sizeof...(T)>()(f,arg...);
 }
 
 template <typename... T>
