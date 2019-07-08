@@ -86,14 +86,35 @@ struct val : detail::wrapper
      * calls the Scheme procedure with the given arguments.  They
      * arguments may be implicitly converted from C++.
      */
-    val operator() () const
-    { return val{scm_call_0(get())}; }
-    val operator() (val a0) const
-    { return val{scm_call_1(get(), a0)}; }
-    val operator() (val a0, val a1) const
-    { return val{scm_call_2(get(), a0, a1)}; }
-    val operator() (val a0, val a1, val a3) const
-    { return val{scm_call_3(get(), a0, a1, a3)}; }
+    template<typename...T>
+    val operator()(T...arg) const {
+      static_assert((std::is_convertible_v<T,val> && ...),
+                    "Arguments must be implicitly convertible to val");
+      constexpr auto nargs = sizeof...(arg);
+      if constexpr(nargs == 0){
+        return scm_call_0(get());
+      } else if (nargs == 1){
+        return scm_call_1(get(),arg...);
+      } else if (nargs == 2){
+        return scm_call_2(get(),arg...);
+      } else if (nargs == 3){
+        return scm_call_3(get(),arg...);
+      } else if (nargs == 4){
+        return scm_call_4(get(),arg...);
+      } else if (nargs == 5){
+        return scm_call_5(get(),arg...);
+      } else if (nargs == 6){
+        return scm_call_6(get(),arg...);
+      } else if (nargs == 7){
+        return scm_call_7(get(),arg...);
+      } else if (nargs == 8){
+        return scm_call_8(get(),arg...);
+      } else if (nargs == 9){
+        return scm_call_9(get(),arg...);
+      } else{
+        return scm_call(get(),arg...,SCM_UNDEFINED);
+      }
+    }
 };
 
 } // namespace scm
