@@ -67,15 +67,21 @@ constexpr auto dispatch_small_scm_call()
 }
 
 template <typename... T>
-SCM scm_funcall_impl(small, SCM f, T... arg)
+SCM scm_funcall_dispatch(small, SCM f, T... arg)
 {
   return dispatch_small_scm_call(f,arg...);
 }
 
 template <typename... T>
-SCM scm_funcall_impl(big, SCM f, T... arg)
+SCM scm_funcall_dispatch(big, SCM f, T... arg)
 {
     return scm_call(f, arg..., SCM_UNDEFINED);
+}
+
+template <typename... T>
+SCM scm_funcall_impl(SCM f, T... arg)
+{
+    return scm_funcall_dispatch(scm_call_size<T...>{}, arg...);
 }
 } // namespace detail
 
