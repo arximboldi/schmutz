@@ -51,6 +51,29 @@ struct list : detail::wrapper
     }
 };
 
+
+  /**
+   * Creates a (wrapped) scheme list of the arguments passed to listify.
+   *
+   * We couldn't make this a constructor for list because it would be
+   * confused with the copy constructor.
+   * It also not called make_list because there is already a
+   * scheme side constructor with the same name and different meaning
+   */
+list listify() { return list{}; }
+list listify(val a0) { return scm_list_1(a0); }
+list listify(val a0, val a1) { return scm_list_2(a0, a1); }
+list listify(val a0, val a1, val a2) { return scm_list_3(a0, a1, a2); }
+list listify(val a0, val a1, val a2, val a3)
+{ return scm_list_4(a0, a1, a2, a3); }
+list listify(val a0, val a1, val a2, val a3, val a4)
+{ return scm_list_5(a0, a1, a2, a3, a4); }
+
+template<typename...T, typename = std::enable_if<(sizeof...(T) > 5), void>>
+list listify(T...arg){
+  return scm_list_n(arg...,SCM_UNDEFINED);
+}
+
 /**
  * C++ representation of a Scheme list that when used at the end of a
  * function, will capture the *rest* arguments.
