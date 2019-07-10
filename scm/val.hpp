@@ -33,7 +33,6 @@ struct wrapper
 protected:
     SCM handle_ = SCM_UNSPECIFIED;
 };
-
 } // namespace detail
 
 /**
@@ -92,8 +91,25 @@ struct val : detail::wrapper
     { return val{scm_call_1(get(), a0)}; }
     val operator() (val a0, val a1) const
     { return val{scm_call_2(get(), a0, a1)}; }
-    val operator() (val a0, val a1, val a3) const
-    { return val{scm_call_3(get(), a0, a1, a3)}; }
+    val operator() (val a0, val a1, val a2) const
+    { return val{scm_call_3(get(), a0, a1, a2)}; }
+    val operator() (val a0, val a1, val a2, val a3) const
+    { return val{scm_call_4(get(), a0, a1, a2, a3)}; }
+    val operator() (val a0, val a1, val a2, val a3, val a4) const
+    { return val{scm_call_5(get(), a0, a1, a2, a3, a4)}; }
+    val operator() (val a0, val a1, val a2, val a3, val a4, val a5) const
+    { return val{scm_call_6(get(), a0, a1, a2, a3, a4, a5)}; }
+    val operator() (val a0, val a1, val a2, val a3, val a4, val a5, val a6) const
+    { return val{scm_call_7(get(), a0, a1, a2, a3, a4, a5, a6)}; }
+    val operator() (val a0, val a1, val a2, val a3, val a4, val a5, val a6,val a7) const
+    { return val{scm_call_8(get(), a0, a1, a2, a3, a4, a5, a6,a7)}; }
+    val operator() (val a0, val a1, val a2, val a3, val a4, val a5, val a6,val a7, val a8) const
+    { return val{scm_call_9(get(), a0, a1, a2, a3, a4, a5, a6,a7,a8)}; }
+
+    template<typename...T, typename = std::enable_if<(sizeof...(T) > 9), void>>
+    val operator() (T...arg) const{
+      return val{scm_call(get(),arg...,SCM_UNDEFINED)};
+    }
 };
 
 } // namespace scm
