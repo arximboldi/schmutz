@@ -135,11 +135,14 @@ struct val : detail::wrapper
      * calls the Scheme procedure with the given arguments.  They
      * arguments may be implicitly converted from C++.
      */
-    template <typename... T>
-    val operator()(T... arg) const
-    {
-      return detail::scm_funcall_impl(get(),arg...);
-    }
+    val operator() () const
+    { return val{scm_call_0(get())}; }
+    val operator() (val a0) const
+    { return val{scm_call_1(get(), a0)}; }
+    val operator() (val a0, val a1) const
+    { return val{scm_call_2(get(), a0, a1)}; }
+    val operator() (val a0, val a1, val a3) const
+    { return val{scm_call_3(get(), a0, a1, a3)}; }
 };
 
 } // namespace scm
