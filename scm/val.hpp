@@ -106,7 +106,7 @@ struct val : detail::wrapper
     val operator() (val a0, val a1, val a2, val a3, val a4, val a5, val a6,val a7, val a8) const
     { return val{scm_call_9(get(), a0, a1, a2, a3, a4, a5, a6,a7,a8)}; }
 
-    template<typename...T, typename = std::enable_if<(sizeof...(T) > 9), void>>
+    template<typename...T, typename = std::enable_if_t<(sizeof...(T) > 9), void>>
     val operator() (T...arg) const{
       return val{scm_call(get(),arg...,SCM_UNDEFINED)};
     }

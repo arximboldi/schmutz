@@ -69,7 +69,7 @@ list listify(val a0, val a1, val a2, val a3)
 list listify(val a0, val a1, val a2, val a3, val a4)
 { return scm_list_5(a0, a1, a2, a3, a4); }
 
-template<typename...T, typename = std::enable_if<(sizeof...(T) > 5), void>>
+template<typename...T, typename = std::enable_if_t<(sizeof...(T) > 5), void>>
 list listify(T...arg){
   return scm_list_n(arg...,SCM_UNDEFINED);
 }
