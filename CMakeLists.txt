@@ -17,7 +17,13 @@ endif()
 #  Options
 #  =======
 
+option(ENABLE_SANITIZE "compile with sanitizers enabled")
 option(ENABLE_COVERAGE "compile with test coverage support")
+set(GUILE_EXTENSION_DIR ${CMAKE_BINARY_DIR})
+
+if (ENABLE_SANITIZE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=leak")
+endif()
 
 include(SchmutzUtils)
 

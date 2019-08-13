@@ -26,28 +26,34 @@ struct foreign_type_storage
 template <typename T>
 SCM foreign_type_storage<T>::data = SCM_UNSPECIFIED;
 
+template <typename T, typename... Args>
+val make_foreign(Args&& ...args)
+{
+    using storage_t = foreign_type_storage<T>;
+    assert(storage_t::data != SCM_UNSPECIFIED &&
+           "cannot create undefined type");
+    return scm_make_foreign_object_1(
+        storage_t::data,
+        new (scm_gc_malloc(sizeof(T), "scmpp")) T(
+            std::forward<Args>(args)...));
+}
+
+template <typename T, typename... Args>
+T& get_foreign(val v)
+{
+    using storage_t = foreign_type_storage<T>;
+    assert(storage_t::data != SCM_UNSPECIFIED &&
+           "can not convert to undefined type");
+    scm_assert_foreign_object_type(storage_t::data, v);
+    return *(T*)scm_foreign_object_ref(v, 0);
+}
+
 template <typename T>
 struct convert_foreign_type
 {
-    using storage_t = foreign_type_storage<T>;
-    static T& to_cpp(SCM v)
-    {
-        assert(storage_t::data != SCM_UNSPECIFIED &&
-               "can not convert to undefined type");
-        scm_assert_foreign_object_type(storage_t::data, v);
-        return *(T*)scm_foreign_object_ref(v, 0);
-    }
-
     template <typename U>
-    static SCM to_scm(U&& v)
-    {
-        assert(storage_t::data != SCM_UNSPECIFIED &&
-               "can not convert from undefined type");
-        return scm_make_foreign_object_1(
-            storage_t::data,
-            new (scm_gc_malloc(sizeof(T), "scmpp")) T(
-                std::forward<U>(v)));
-    }
+    static SCM to_scm(U&& v) { return make_foreign<T>(std::forward<U>(v)); }
+    static T&  to_cpp(SCM v) { return get_foreign<T>(v); }
 };
 
 // Assume that every other type is foreign
@@ -82,10 +88,16 @@ struct type_definer : move_sequence
         if (!moved_from_) {
             using storage_t = detail::foreign_type_storage<T>;
             assert(storage_t::data == SCM_UNSPECIFIED);
-            storage_t::data = scm_make_foreign_object_type(
-                scm_from_utf8_symbol(("<" + type_name_ + ">").c_str()),
+            auto define_name  = "<" + type_name_ + ">";
+            auto foreign_type = scm_make_foreign_object_type(
+                scm_from_utf8_symbol(define_name.c_str()),
                 scm_list_1(scm_from_utf8_symbol("data")),
                 finalizer_);
+            scm_c_define(define_name.c_str(), foreign_type);
+            storage_t::data = foreign_type;
+#if SCM_AUTO_EXPORT
+            scm_c_export(define_name.c_str());
+#endif
         }
     }
 
@@ -102,7 +114,7 @@ struct type_definer : move_sequence
      */
     next_t constructor() &&
     {
-        define_impl<this_t>(type_name_, [] { return T{}; });
+        define_impl<this_t>(type_name_, &make_foreign<T>);
         return { std::move(*this) };
     }
 
@@ -123,7 +135,7 @@ struct type_definer : move_sequence
      */
     next_t maker() &&
     {
-        define_impl<this_t>("make-" + type_name_, [] { return T{}; });
+        define_impl<this_t>("make-" + type_name_, &make_foreign<T>);
         return { std::move(*this) };
     }
 

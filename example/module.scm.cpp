@@ -7,7 +7,6 @@
 //
 
 #include <scm/scm.hpp>
-
 #include <numeric>
 
 struct dummy
@@ -45,9 +44,17 @@ void func()
     scm_newline(port);
 }
 
-int sum_all(scm::args xs)
+class counter
 {
-    return std::accumulate(xs.begin(), xs.end(), 0, std::plus<int>{});
+    std::size_t count_ = 0;
+public:
+    std::size_t get() const { return count_; }
+    void tick() { ++count_; }
+};
+
+int fold_args(scm::val fn, scm::val fst, scm::args xs)
+{
+    return std::accumulate(xs.begin(), xs.end(), fst, fn);
 }
 
 struct bar_tag_t {};
@@ -55,6 +62,15 @@ struct bar_tag_t {};
 extern "C"
 void init_module()
 {
+    scm::type<counter>("counter")
+        .constructor()
+        .define("get", &counter::get)
+        .define("tick!", &counter::tick);
+
+    scm::group()
+        .define("the-answer", [] { return 42; })
+        .define("fold-args", fold_args);
+
     scm::type<dummy>("dummy")
         .constructor()
         .finalizer()
@@ -70,5 +86,5 @@ void init_module()
 
     scm::group("foo")
         .define("func1", func<1>)
-        .define("sum-all", sum_all);
+        .define("sum-all", fold_args);
 }

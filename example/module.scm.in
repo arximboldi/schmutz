@@ -7,4 +7,4 @@
 ;;
 
 (define-module (example module))
-(load-extension "@GUILE_EXTENSION_DIR@/libmodule" "init_module")
+(load-extension "@GUILE_EXTENSION_DIR@/example/libmodule" "init_module")
