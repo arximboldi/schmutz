@@ -1,7 +1,6 @@
-
-.. image:: https://travis-ci.org/arximboldi/schmutz.svg?branch=master
-   :target: https://travis-ci.org/arximboldi/schmutz
-   :alt: Travis Badge
+.. image:: https://github.com/arximboldi/schmutz/workflows/test/badge.svg
+   :target: https://github.com/arximboldi/schmutz/actions?query=workflow%3Atest+branch%3Amaster
+   :alt: Github Actions Badge
 
 .. image:: https://codecov.io/gh/arximboldi/schmutz/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/arximboldi/schmutz
