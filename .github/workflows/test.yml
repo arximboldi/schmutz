@@ -42,7 +42,7 @@ jobs:
     strategy:
       matrix:
         type: [Debug, Release]
-        compiler: [gcc5, clang_38]
+        compiler: [gcc5, clang_4]
         opts: [[]]
         include:
           - type: Debug
