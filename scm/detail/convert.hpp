@@ -32,6 +32,13 @@ auto to_cpp(SCM v)
     -> SCM_DECLTYPE_RETURN(
         convert<std::decay_t<T>>::to_cpp(v));
 
+/// convert is specialized for bool, since loading and writing has a different syntax in libguile
+template<>
+struct convert<bool> {
+    static bool to_cpp(SCM v) { return scm_is_true(v) == 1; }
+    static SCM to_scm(bool v) { return scm_from_bool(static_cast<int>(v)); }
+};
+
 } // namespace detail
 } // namespace scm
 
