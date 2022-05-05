@@ -25,12 +25,12 @@ struct convert;
 template <typename T>
 auto to_scm(T&& v)
     -> SCM_DECLTYPE_RETURN(
-        convert<std::decay_t<T>>::to_scm(std::forward<T>(v)));
+        convert<std::decay_t<T>>::to_scm(std::forward<T>(v)))
 
 template <typename T>
 auto to_cpp(SCM v)
     -> SCM_DECLTYPE_RETURN(
-        convert<std::decay_t<T>>::to_cpp(v));
+        convert<std::decay_t<T>>::to_cpp(v))
 
 /// convert is specialized for bool, since loading and writing has a different syntax in libguile
 template<>

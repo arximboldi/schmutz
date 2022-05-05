@@ -123,4 +123,4 @@ struct val : detail::wrapper
     }} /* namespace scm::detail */                                      \
     /**/
 
-SCM_DECLARE_WRAPPER_TYPE(val);
+SCM_DECLARE_WRAPPER_TYPE(val)

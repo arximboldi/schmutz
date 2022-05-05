@@ -85,5 +85,5 @@ struct args : list
 
 } // namespace scm
 
-SCM_DECLARE_WRAPPER_TYPE(scm::list);
-SCM_DECLARE_WRAPPER_TYPE(scm::args);
+SCM_DECLARE_WRAPPER_TYPE(scm::list)
+SCM_DECLARE_WRAPPER_TYPE(scm::args)
