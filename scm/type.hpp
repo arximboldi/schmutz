@@ -96,7 +96,7 @@ struct type_definer : move_sequence
             scm_c_define(define_name.c_str(), foreign_type);
             storage_t::data = foreign_type;
 #if SCM_AUTO_EXPORT
-            scm_c_export(define_name.c_str());
+            scm_c_export(define_name.c_str(),nullptr);
 #endif
         }
     }

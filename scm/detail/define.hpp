@@ -28,7 +28,7 @@ static void define_impl(const std::string& name, Fn fn)
     auto subr = (scm_t_subr) +subr_wrapper_aux<Tag>(fn, args_t{});
     scm_c_define_gsubr(name.c_str(), arg_count, 0, has_rest, subr);
 #if SCM_AUTO_EXPORT
-    scm_c_export(name.c_str());
+    scm_c_export(name.c_str(),nullptr);
 #endif
 }
 
